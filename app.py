@@ -138,6 +138,19 @@ lassen sich als **animierter LKW** abspielen und als **PDF-Tourenplan** herunter
 """
 )
 
+# erklaerseite:einfach:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/tourenplanung-erklaert.json, nicht von Hand ändern)
+with st.expander("💬 In einfachen Worten"):
+    st.markdown(
+        """
+Stellen Sie sich einen Lieferdienst vor: Mehrere Lieferwagen mit begrenztem Laderaum müssen viele Orte anfahren, manche nur in einem bestimmten Zeitraum. Zu entscheiden ist, welcher Wagen welche Orte in welcher Reihenfolge bedient. Schon bei wenigen Dutzend Orten gibt es so viele Möglichkeiten, dass man sie nicht alle durchprobieren kann.
+
+Die Demo löst das mit vier Faustregeln (Sweep, Savings, Beam Search, genetischer Algorithmus). Danach verbessert ein **Nachbessern** jeden Plan Schritt für Schritt. Zum Vergleich rechnet ein frei verfügbares Programm von Google dieselbe Aufgabe. Das Netz und die Daten sind erfunden: Die Demo zeigt, wie die Verfahren zueinander stehen, nicht was Ihre Touren kosten.
+
+[Ausführlich und verständlich erklärt, mit Fachteil](https://sebastianhanisch.net/tourenplanung-erklaert.html)
+        """
+    )
+# erklaerseite:einfach:end
+
 st.caption("🎯 Schnellstart – ein Beispielszenario laden:")
 preset_col1, preset_col2, preset_col3 = st.columns(3)
 with preset_col1:
@@ -794,6 +807,28 @@ selbst implementiert oder mit einem Solver wie OR-Tools.
     )
 
 with st.expander("📐 Mathematische Formulierung"):
+    # erklaerseite:lesehilfe:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/tourenplanung-erklaert.json, nicht von Hand ändern)
+    st.markdown(
+        r"""
+**Lesehilfe.** Gegeben sind $n$ Stopps mit Bedarf, ein Depot, $K$ Fahrzeuge mit gleicher Kapazität und die Fahrstrecken zwischen allen Orten (optional Zeitfenster). Gesucht ist eine Aufteilung der Stopps auf die Fahrzeuge samt Reihenfolge, die die gefahrene Gesamtstrecke minimiert und dabei Kapazität und Zeitfenster einhält.
+
+| Symbol | Bedeutung |
+|---|---|
+| $I$, $n$ | Menge und Zahl der Stopps (das Depot ist Knoten $0$) |
+| $K$, $Q$ | Zahl der Fahrzeuge und Kapazität je Fahrzeug |
+| $w_i$ | Bedarf von Stopp $i$ |
+| $D_{ij}$ | Fahrstrecke von $i$ nach $j$ (kürzester Weg im Straßennetz, je Richtung verschieden möglich) |
+| $[e_i, l_i]$, $s_i$ | Zeitfenster (frühester und spätester Start) und Servicezeit von Stopp $i$ |
+| $R_v$ | Tour von Fahrzeug $v$ (geordnete Liste von Stopps) |
+| $x_{ijv}$ | gleich 1, wenn Fahrzeug $v$ direkt von $i$ nach $j$ fährt, sonst 0 |
+| $\binom{n+K-1}{K-1}$ | Zahl der Aufteilungen von $n$ Stopps auf $K$ Touren (ohne Reihenfolge) |
+| $s_{ij}$ | Ersparnis, wenn die Tour, die in $i$ endet, mit der Tour verbunden wird, die in $j$ beginnt (nicht zu verwechseln mit der Servicezeit $s_i$) |
+| $a_{r_k}$, $t_{r_k}$ | Ankunfts- und Abfahrtszeit am $k$-ten Stopp einer Tour |
+
+[Schritt für Schritt erklärt, mit Herleitung und Literatur](https://sebastianhanisch.net/tourenplanung-erklaert.html#fachleute)
+        """
+    )
+    # erklaerseite:lesehilfe:end
     st.markdown(
         r"""
 **Gegeben:**

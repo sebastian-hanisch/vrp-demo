@@ -52,7 +52,9 @@ Fahrzeit/Kosten/CO₂-Ersparnis gegenüber einer **unoptimierten Ausgangslage** 
 Eingabereihenfolge, ohne jede Optimierung) prominent im Vordergrund - kein
 Algorithmus-Name in der Überschrift, nur das Ergebnis. Welche Methode konkret gewonnen
 hat, steht als kleine, zurückhaltende Caption darunter (Transparenz ohne die
-eigentliche Botschaft zu verwässern).
+eigentliche Botschaft zu verwässern). Die Höhe der Ersparnis rechnet die App für das jeweils
+gewählte Szenario gegen diese bewusst einfache Ausgangslage aus; eine Messreihe über viele
+Instanzen gibt es dafür nicht, und über eine gute manuelle Planung sagt der Wert nichts aus.
 
 Der komplette Methodenvergleich (alle vier Heuristiken einzeln, OR-Tools,
 Benchmark-Details) liegt danach eingeklappt im Expander "🔧 Wie wir das erreichen" -
@@ -88,7 +90,7 @@ verfügbar, sobald gelöst.
 - **Vier eigene Konstruktionsheuristiken im Vergleich:**
   - *Sweep* – Polarwinkel-Sortierung um das Depot
   - *Savings* (Clarke & Wright, 1964) – fusioniert Einzeltouren nach Ersparnis
-  - *Beam Search* – verfolgt die 8 besten Teillösungen parallel statt nur einer
+  - *Beam Search* – verfolgt die 16 (ohne Zeitfenster) bzw. 8 (mit Zeitfenstern) besten Teillösungen parallel statt nur einer
   - *Genetischer Algorithmus* – Giant-Tour-Kodierung, Order Crossover, Elitismus
   
   Jede Konstruktion wird mit derselben lokalen Suche verbessert und hat einen eigenen
@@ -1146,12 +1148,15 @@ explizit zuerst auf Verletzungen.
   Lösung", wenn strukturell zu wenig Kapazität da ist), während die eigenen
   Heuristiken ein Fahrzeug still überladen und nur warnen – ein Verhaltensunterschied,
   kein Fehler.
-- Rechenzeit: alle vier eigenen Heuristiken (inkl. lokaler Suche) laufen unter 200 ms,
-  OR-Tools nutzt sein Zeitlimit meist voll aus.
+- Rechenzeit (ohne Zeitfenster, laut Tabelle oben): Sweep ~2 ms, Savings ~1 ms, Beam Search
+  ~340 ms, genetischer Algorithmus ~450 ms; mit Zeitfenstern sind Beam Search und der
+  genetische Algorithmus teurer (siehe die Abschnitte zum Performance-Kompromiss). OR-Tools
+  nutzt sein Zeitlimit meist voll aus.
 
-**Fazit:** Kein Verfahren gewinnt universell - Savings und der genetische Algorithmus
-liegen am nächsten an OR-Tools, alle vier eigenen Heuristiken sind praktisch kostenlos
-in der Rechenzeit. OR-Tools bleibt die richtige Wahl, sobald zusätzliche, komplexere
+**Fazit:** Kein Verfahren gewinnt universell - Beam Search und der genetische Algorithmus
+liegen ohne Zeitfenster am nächsten an OR-Tools (+0,2 % bzw. +0,3 % im Schnitt), Savings
+liegt mit +1,2 % bei praktisch kostenloser Rechenzeit dahinter, Beam Search und der
+genetische Algorithmus brauchen dafür spürbar mehr Rechenzeit. OR-Tools bleibt die richtige Wahl, sobald zusätzliche, komplexere
 Nebenbedingungen (mehrere Depots, Fahrerregeln, Pickup & Delivery) dazukommen, die sich
 in einer eigenen Heuristik nur mit deutlich mehr Aufwand sauber abbilden ließen. Welches
 Verfahren sich lohnt, hängt von Problemgröße, Zeitbudget und Anforderungen ab – genau
@@ -1250,8 +1255,6 @@ längeren, aber funktionalen Scroll (bewusst nicht weiter vereinfacht).
 
 ## 6. Anpassungsideen für später
 
-- Genetischer Algorithmus/Beam Search: Zeitfenster auch direkt in der Konstruktion
-  berücksichtigen (aktuell wirkt sich das erst in der anschließenden lokalen Suche aus)
 - Weitere Nebenbedingung: Fahrerarbeitszeiten, mehrere Depots
 - Dynamische Neuoptimierung (neuer Auftrag trifft während der Fahrt ein)
 - Feedback-Auswertung robuster machen (Google Sheet/Datenbank statt lokaler CSV, siehe
